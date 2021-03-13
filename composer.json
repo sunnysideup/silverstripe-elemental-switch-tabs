@@ -1,0 +1,39 @@
+{
+  "name": "sunnysideup/elemental-switch-tabs",
+  "type": "silverstripe-vendormodule",
+  "description": "Helps CMS Users navigate through tabs in Elemental CMS Interface by providing clickable links to switch tabs.",
+  "keywords": [
+    "Silverstripe-CMS",
+    "CMS",
+    "Silverstripe",
+    "link",
+    "elemental",
+    "switch tabs",
+    "tabs",
+    "cms fields",
+    "cms",
+    "fields",
+    "field"
+  ],
+  "require": {
+    "silverstripe/framework": "^4.0",
+    "dnadesign/silverstripe-elemental": "^4.0"
+  },
+  "minimum-stability": "dev",
+  "prefer-stable": true,
+  "license": "BSD-3-Clause",
+  "authors": [
+    {
+      "name": "Nicolaas Francken",
+      "email": "modules@sunnysideup.co.nz",
+      "role": "lead developer"
+    }
+  ],
+  "autoload": {
+    "psr-4": {
+      "Sunnysideup\\ElementalSwitchTabs\\": "src/"
+    }
+  },
+  "suggested": {
+  }
+}
