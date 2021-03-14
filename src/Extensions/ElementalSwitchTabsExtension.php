@@ -2,9 +2,9 @@
 
 namespace Sunnysideup\ElementalSwitchTabs\Extensions;
 
-use SilverStripe\ORM\DataExtension;
-
 use SilverStripe\Forms\LiteralField;
+
+use SilverStripe\ORM\DataExtension;
 
 class ElementalSwitchTabsExtension extends DataExtension
 {
