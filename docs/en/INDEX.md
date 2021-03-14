@@ -1,12 +1,12 @@
 # tl;dr
 
-Add as extension to any class ...
+Use like this:
 
 ```php
-MyElemental extends BaseElement
+
+public function getCMSFields()
 {
-    private static $extensions = [
-        Sunnysideup\ElementalSwitchTabs\Extensions\ElementalSwitchTabsExtension:class
-    ];
+    $fields = parent::getCMSFields();
+    $fields->addFieldToTab('Root.Main', $this->getLinksField('MyOtherTab', 'Please open MyOtherTab for more content editings'));
 }
 ```
