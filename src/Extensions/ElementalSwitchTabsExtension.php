@@ -3,7 +3,6 @@
 namespace Sunnysideup\ElementalSwitchTabs\Extensions;
 
 use SilverStripe\Forms\LiteralField;
-
 use SilverStripe\ORM\DataExtension;
 
 class ElementalSwitchTabsExtension extends DataExtension
@@ -22,10 +21,10 @@ class ElementalSwitchTabsExtension extends DataExtension
         if(jQuery(this).closest('div.element-editor__element').length > 0) {
             jQuery(this)
                 .closest('div.element-editor__element')
-                .find('button[name=\'${nameOfTab}\']')
+                .find('button[name=\\'{$nameOfTab}\\']')
                 .click();
         } else {
-            jQuery('li[aria-controls=\'Root_${nameOfTab}\'] a').click();
+            jQuery('li[aria-controls=\\'Root_{$nameOfTab}\\'] a').click();
         }
         return false;
 js;
