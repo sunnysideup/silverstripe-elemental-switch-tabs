@@ -43,8 +43,8 @@ js;
             $parent = $owner->Parent();
             if($parent) {
                 return $parent->Elements()
-                    ->filter(['Sort:LessThanOrEqual' => $this->Sort])
-                    ->exclude(['ID' => $this->ID])
+                    ->filter(['Sort:LessThanOrEqual' => $owner->Sort])
+                    ->exclude(['ID' => $owner->ID])
                     ->sort(['Sort' => 'ASC'])
                     ->last();
             }
@@ -61,8 +61,8 @@ js;
             $parent = $owner->Parent();
             if($parent) {
                 return $parent->Elements()
-                    ->filter(['Sort:GreaterThanOrEqual' => $this->Sort])
-                    ->exclude(['ID' => $this->ID])
+                    ->filter(['Sort:GreaterThanOrEqual' => $owner->Sort])
+                    ->exclude(['ID' => $owner->ID])
                     ->sort(['Sort' => 'ASC'])
                     ->first();
             }
