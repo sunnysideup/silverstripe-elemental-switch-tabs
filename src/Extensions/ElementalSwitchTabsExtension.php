@@ -38,10 +38,11 @@ js;
      */
     public function PreviousBlock()
     {
-        if($this->exists()) {
-            $parent = $this->getOwner()->Parent();
+        $owner = $this->getOwner();
+        if($owner->exists()) {
+            $parent = $owner->Parent();
             if($parent) {
-                return BaseElement::get()
+                return $parent->Elements()
                     ->filter(['Sort:LessThanOrEqual' => $this->Sort])
                     ->exclude(['ID' => $this->ID])
                     ->sort(['Sort' => 'ASC'])
@@ -55,10 +56,11 @@ js;
      */
     public function NextBlock()
     {
-        if($this->exists()) {
-            $parent = $this->getOwner()->Parent();
+        $owner = $this->getOwner();
+        if($owner->exists()) {
+            $parent = $owner->Parent();
             if($parent) {
-                return BaseElement::get()
+                return $parent->Elements()
                     ->filter(['Sort:GreaterThanOrEqual' => $this->Sort])
                     ->exclude(['ID' => $this->ID])
                     ->sort(['Sort' => 'ASC'])
