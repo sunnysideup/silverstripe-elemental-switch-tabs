@@ -51,6 +51,14 @@ js;
         }
     }
 
+    public function MyCMSEditLink() : string
+    {
+        $owner = $this->getOwner();
+        $page = $owner->getPage();
+
+        return '/admin/pages/edit/EditForm/'.$page->ID.'/field/ElementalArea/item/'.$owner->ID.'/edit';
+    }
+
     /**
      * @return BaseElement|null
      */
