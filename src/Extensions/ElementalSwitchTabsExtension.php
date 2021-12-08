@@ -2,10 +2,9 @@
 
 namespace Sunnysideup\ElementalSwitchTabs\Extensions;
 
+use DNADesign\Elemental\Models\BaseElement;
 use SilverStripe\Forms\LiteralField;
 use SilverStripe\ORM\DataExtension;
-
-use DNADesign\Elemental\Models\BaseElement;
 
 class ElementalSwitchTabsExtension extends DataExtension
 {
@@ -15,6 +14,52 @@ class ElementalSwitchTabsExtension extends DataExtension
             'LinkToLink' . $nameOfTab,
             '<a href="#" onclick="' . $this->getJsFoTabSwitch($nameOfTab) . '">' . $label . '</a>'
         );
+    }
+
+    /**
+     * @return null|BaseElement
+     */
+    public function PreviousBlock()
+    {
+        $owner = $this->getOwner();
+        if ($owner->exists()) {
+            $parent = $owner->Parent();
+            if ($parent) {
+                return $parent->Elements()
+                    ->filter(['Sort:LessThanOrEqual' => $owner->Sort])
+                    ->exclude(['ID' => $owner->ID])
+                    ->sort(['Sort' => 'ASC'])
+                    ->last()
+                ;
+            }
+        }
+    }
+
+    public function MyCMSEditLink(): string
+    {
+        $owner = $this->getOwner();
+        $page = $owner->getPage();
+
+        return '/admin/pages/edit/EditForm/' . $page->ID . '/field/ElementalArea/item/' . $owner->ID . '/edit';
+    }
+
+    /**
+     * @return null|BaseElement
+     */
+    public function NextBlock()
+    {
+        $owner = $this->getOwner();
+        if ($owner->exists()) {
+            $parent = $owner->Parent();
+            if ($parent) {
+                return $parent->Elements()
+                    ->filter(['Sort:GreaterThanOrEqual' => $owner->Sort])
+                    ->exclude(['ID' => $owner->ID])
+                    ->sort(['Sort' => 'ASC'])
+                    ->first()
+                ;
+            }
+        }
     }
 
     protected function getJsFoTabSwitch(string $nameOfTab): string
@@ -30,50 +75,5 @@ class ElementalSwitchTabsExtension extends DataExtension
         }
         return false;
 js;
-    }
-
-
-    /**
-     * @return BaseElement|null
-     */
-    public function PreviousBlock()
-    {
-        $owner = $this->getOwner();
-        if($owner->exists()) {
-            $parent = $owner->Parent();
-            if($parent) {
-                return $parent->Elements()
-                    ->filter(['Sort:LessThanOrEqual' => $owner->Sort])
-                    ->exclude(['ID' => $owner->ID])
-                    ->sort(['Sort' => 'ASC'])
-                    ->last();
-            }
-        }
-    }
-
-    public function MyCMSEditLink() : string
-    {
-        $owner = $this->getOwner();
-        $page = $owner->getPage();
-
-        return '/admin/pages/edit/EditForm/'.$page->ID.'/field/ElementalArea/item/'.$owner->ID.'/edit';
-    }
-
-    /**
-     * @return BaseElement|null
-     */
-    public function NextBlock()
-    {
-        $owner = $this->getOwner();
-        if($owner->exists()) {
-            $parent = $owner->Parent();
-            if($parent) {
-                return $parent->Elements()
-                    ->filter(['Sort:GreaterThanOrEqual' => $owner->Sort])
-                    ->exclude(['ID' => $owner->ID])
-                    ->sort(['Sort' => 'ASC'])
-                    ->first();
-            }
-        }
     }
 }
