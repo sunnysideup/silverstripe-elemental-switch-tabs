@@ -40,7 +40,7 @@ class ElementalSwitchTabsExtension extends DataExtension
         $owner = $this->getOwner();
         $page = $owner->getPage();
 
-        return '/admin/pages/edit/EditForm/' . $page->ID . '/field/ElementalArea/item/' . $owner->ID . '/edit';
+        return '/admin/pages/edit/EditForm/' . ($page ? $page->ID : 0) . '/field/ElementalArea/item/' . ($owner ? $owner->ID : 0) . '/edit';
     }
 
     /**
