@@ -17,7 +17,7 @@ class ElementalSwitchTabsExtension extends DataExtension
     }
 
     /**
-     * @return null|BaseElement
+     * @return BaseElement|null
      */
     public function PreviousBlock()
     {
@@ -33,6 +33,7 @@ class ElementalSwitchTabsExtension extends DataExtension
                 ;
             }
         }
+        return null;
     }
 
     public function MyCMSEditLink(): string
@@ -44,7 +45,7 @@ class ElementalSwitchTabsExtension extends DataExtension
     }
 
     /**
-     * @return null|BaseElement
+     * @return BaseElement|null
      */
     public function NextBlock()
     {
@@ -60,6 +61,7 @@ class ElementalSwitchTabsExtension extends DataExtension
                 ;
             }
         }
+        return null;
     }
 
     protected function getJsFoTabSwitch(string $nameOfTab): string
