@@ -7,6 +7,7 @@ use DNADesign\Elemental\Models\BaseElement;
 use DNADesign\Elemental\Controllers\ElementalAreaController;
 use SilverStripe\Forms\FieldList;
 use SilverStripe\Forms\LiteralField;
+use SilverStripe\Forms\ReadonlyField;
 use SilverStripe\ORM\DataExtension;
 
 use SilverStripe\Control\Controller;
@@ -35,6 +36,11 @@ class ElementalSwitchTabsExtension extends DataExtension
                 'Title'
             );
         } else {
+            $page = $owner->getPage();
+            $pageTitle = 'Page not found';
+            if($page) {
+                $pageTitle = $page->MenuTitle;
+            }
             $fields->addFieldsToTab(
                 'Root.Main',
                 [
@@ -43,12 +49,22 @@ class ElementalSwitchTabsExtension extends DataExtension
                         '<a
                             href="' . $owner->CMSEditLink(false) . '"
                             style="float: right; display: block; width: auto;"
-                        >Edit on Page</a>'
+                        >Edit on '.$pageTitle.' Page</a>'
                     ),
                 ],
                 'Title'
             );
         }
+        $fields->addFieldsToTab(
+            'Root.Settings',
+            [
+                ReadonlyField::create(
+                    'Type',
+                    'Block Type',
+                    $owner->getType()
+                )
+            ]
+        );
     }
 
 
