@@ -3,11 +3,32 @@
 namespace Sunnysideup\ElementalSwitchTabs\Extensions;
 
 use DNADesign\Elemental\Models\BaseElement;
+use SilverStripe\Forms\FieldList;
 use SilverStripe\Forms\LiteralField;
 use SilverStripe\ORM\DataExtension;
 
 class ElementalSwitchTabsExtension extends DataExtension
 {
+
+    public function updateCMSFields(FieldList $fields)
+    {
+        $owner = $this->getOwner();
+        $fields->addFieldsToTab(
+            'Root.Main',
+            [
+                LiteralField::create(
+                    'AllSettings',
+                    '<a
+                        href="' . $owner->MyCMSEditLink(true) . '"
+                        style="float: right; display: block; width: auto;"
+                    >Edit All Settings</a>'
+                ),
+            ],
+            'Title'
+        );
+    }
+
+
     public function getLinksField(string $nameOfTab, string $label)
     {
         return LiteralField::create(
@@ -39,9 +60,7 @@ class ElementalSwitchTabsExtension extends DataExtension
     public function MyCMSEditLink(): string
     {
         $owner = $this->getOwner();
-        $page = $owner->getPage();
-
-        return '/admin/pages/edit/EditForm/' . ($page ? $page->ID : 0) . '/field/ElementalArea/item/' . ($owner ? $owner->ID : 0) . '/edit';
+        return (string) $owner->CMSEditLink(true);
     }
 
     /**
