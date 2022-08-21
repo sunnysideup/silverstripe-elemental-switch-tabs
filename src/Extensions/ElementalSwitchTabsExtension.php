@@ -3,9 +3,15 @@
 namespace Sunnysideup\ElementalSwitchTabs\Extensions;
 
 use DNADesign\Elemental\Models\BaseElement;
+
+use DNADesign\Elemental\Controllers\ElementalAreaController;
 use SilverStripe\Forms\FieldList;
 use SilverStripe\Forms\LiteralField;
 use SilverStripe\ORM\DataExtension;
+
+use SilverStripe\Control\Controller;
+
+use SilverStripe\Admin\LeftAndMain;
 
 class ElementalSwitchTabsExtension extends DataExtension
 {
@@ -13,19 +19,36 @@ class ElementalSwitchTabsExtension extends DataExtension
     public function updateCMSFields(FieldList $fields)
     {
         $owner = $this->getOwner();
-        $fields->addFieldsToTab(
-            'Root.Main',
-            [
-                LiteralField::create(
-                    'AllSettings',
-                    '<a
-                        href="' . $owner->MyCMSEditLink(true) . '"
-                        style="float: right; display: block; width: auto;"
-                    >Edit All Settings</a>'
-                ),
-            ],
-            'Title'
-        );
+        $controller = Controller::curr();
+        if(($controller && $controller instanceof ElementalAreaController)) {
+            $fields->addFieldsToTab(
+                'Root.Main',
+                [
+                    LiteralField::create(
+                        'AllSettings',
+                        '<a
+                            href="' . $owner->MyCMSEditLink() . '"
+                            style="float: right; display: block; width: auto;"
+                        >Edit All Settings</a>'
+                    ),
+                ],
+                'Title'
+            );
+        } else {
+            $fields->addFieldsToTab(
+                'Root.Main',
+                [
+                    LiteralField::create(
+                        'AllSettings',
+                        '<a
+                            href="' . $owner->CMSEditLink(false) . '"
+                            style="float: right; display: block; width: auto;"
+                        >Edit on Page</a>'
+                    ),
+                ],
+                'Title'
+            );
+        }
     }
 
 
