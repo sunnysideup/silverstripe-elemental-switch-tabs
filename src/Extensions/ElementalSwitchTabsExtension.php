@@ -48,8 +48,8 @@ class ElementalSwitchTabsExtension extends DataExtension
                         'AllSettings',
                         '<a
                             href="' . $owner->CMSEditLink(false) . '"
-                            style="float: right; display: block; width: auto;"
-                        >Edit on '.$pageTitle.' Page</a>'
+                            style="text-align: right; display: block; padding-bottom: 20px;"
+                        >Edit on the "'.$pageTitle.'" page</a>'
                     ),
                 ],
                 'Title'
