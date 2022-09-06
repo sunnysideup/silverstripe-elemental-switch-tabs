@@ -14,6 +14,8 @@ use SilverStripe\Control\Controller;
 
 use SilverStripe\Admin\LeftAndMain;
 
+use SilverStripe\CMS\Controllers\CMSPageEditController;
+
 class ElementalSwitchTabsExtension extends DataExtension
 {
 
@@ -35,7 +37,7 @@ class ElementalSwitchTabsExtension extends DataExtension
                 ],
                 'Title'
             );
-        } else {
+        } elseif($controller && ! ($controller instanceof CMSPageEditController)) {
             $page = $owner->getPage();
             $pageTitle = 'Page not found';
             if($page) {
