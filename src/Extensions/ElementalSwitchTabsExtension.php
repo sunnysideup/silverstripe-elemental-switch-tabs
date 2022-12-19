@@ -4,11 +4,72 @@ namespace Sunnysideup\ElementalSwitchTabs\Extensions;
 
 use SilverStripe\Forms\FieldList;
 use DNADesign\Elemental\Models\BaseElement;
+
+use DNADesign\Elemental\Controllers\ElementalAreaController;
+use SilverStripe\Forms\FieldList;
 use SilverStripe\Forms\LiteralField;
+use SilverStripe\Forms\ReadonlyField;
 use SilverStripe\ORM\DataExtension;
+
+use SilverStripe\Control\Controller;
+
+use SilverStripe\Admin\LeftAndMain;
+
+use SilverStripe\CMS\Controllers\CMSPageEditController;
 
 class ElementalSwitchTabsExtension extends DataExtension
 {
+
+    public function updateCMSFields(FieldList $fields)
+    {
+        $owner = $this->getOwner();
+        $controller = Controller::curr();
+        if(($controller && $controller instanceof ElementalAreaController)) {
+            $fields->addFieldsToTab(
+                'Root.Main',
+                [
+                    LiteralField::create(
+                        'AllSettings',
+                        '<a
+                            href="' . $owner->MyCMSEditLink() . '"
+                            style="float: right; display: block; width: auto;"
+                        >Edit All Settings</a>'
+                    ),
+                ],
+                'Title'
+            );
+        } elseif($controller && ! ($controller instanceof CMSPageEditController)) {
+            $page = $owner->getPage();
+            $pageTitle = 'Page not found';
+            if($page) {
+                $pageTitle = $page->MenuTitle;
+            }
+            $fields->addFieldsToTab(
+                'Root.Main',
+                [
+                    LiteralField::create(
+                        'AllSettings',
+                        '<a
+                            href="' . $owner->CMSEditLink(false) . '"
+                            style="text-align: right; display: block; padding-bottom: 20px;"
+                        >Edit on the "'.$pageTitle.'" page</a>'
+                    ),
+                ],
+                'Title'
+            );
+        }
+        $fields->addFieldsToTab(
+            'Root.Settings',
+            [
+                ReadonlyField::create(
+                    'Type',
+                    'Block Type',
+                    $owner->getType()
+                )
+            ]
+        );
+    }
+
 
     public function getLinksField(string $nameOfTab, string $label)
     {
@@ -19,7 +80,7 @@ class ElementalSwitchTabsExtension extends DataExtension
     }
 
     /**
-     * @return null|BaseElement
+     * @return BaseElement|null
      */
     public function PreviousBlock()
     {
@@ -35,18 +96,17 @@ class ElementalSwitchTabsExtension extends DataExtension
                 ;
             }
         }
+        return null;
     }
 
     public function MyCMSEditLink(): string
     {
         $owner = $this->getOwner();
-        $page = $owner->getPage();
-
-        return '/admin/pages/edit/EditForm/' . ($page ? $page->ID : 0) . '/field/ElementalArea/item/' . ($owner ? $owner->ID : 0) . '/edit';
+        return (string) $owner->CMSEditLink(true);
     }
 
     /**
-     * @return null|BaseElement
+     * @return BaseElement|null
      */
     public function NextBlock()
     {
@@ -62,6 +122,7 @@ class ElementalSwitchTabsExtension extends DataExtension
                 ;
             }
         }
+        return null;
     }
 
     protected function getJsFoTabSwitch(string $nameOfTab): string
