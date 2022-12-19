@@ -2,12 +2,14 @@
 
 namespace Sunnysideup\ElementalSwitchTabs\Extensions;
 
+use SilverStripe\Forms\FieldList;
 use DNADesign\Elemental\Models\BaseElement;
 use SilverStripe\Forms\LiteralField;
 use SilverStripe\ORM\DataExtension;
 
 class ElementalSwitchTabsExtension extends DataExtension
 {
+
     public function getLinksField(string $nameOfTab, string $label)
     {
         return LiteralField::create(
