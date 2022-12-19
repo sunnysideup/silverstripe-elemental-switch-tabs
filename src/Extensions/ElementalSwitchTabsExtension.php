@@ -6,7 +6,7 @@ use SilverStripe\Forms\FieldList;
 use DNADesign\Elemental\Models\BaseElement;
 
 use DNADesign\Elemental\Controllers\ElementalAreaController;
-use SilverStripe\Forms\FieldList;
+
 use SilverStripe\Forms\LiteralField;
 use SilverStripe\Forms\ReadonlyField;
 use SilverStripe\ORM\DataExtension;
