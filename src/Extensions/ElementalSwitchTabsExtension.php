@@ -4,27 +4,23 @@ namespace Sunnysideup\ElementalSwitchTabs\Extensions;
 
 use SilverStripe\Forms\FieldList;
 use DNADesign\Elemental\Models\BaseElement;
-
 use DNADesign\Elemental\Controllers\ElementalAreaController;
-
 use SilverStripe\Forms\LiteralField;
 use SilverStripe\Forms\ReadonlyField;
 use SilverStripe\ORM\DataExtension;
-
 use SilverStripe\Control\Controller;
-
 use SilverStripe\Admin\LeftAndMain;
-
 use SilverStripe\CMS\Controllers\CMSPageEditController;
+use SilverStripe\Core\ClassInfo;
+use SilverStripe\Forms\DropdownField;
 
 class ElementalSwitchTabsExtension extends DataExtension
 {
-
     public function updateCMSFields(FieldList $fields)
     {
         $owner = $this->getOwner();
         $controller = Controller::curr();
-        if(($controller && $controller instanceof ElementalAreaController)) {
+        if (($controller && $controller instanceof ElementalAreaController)) {
             $fields->addFieldsToTab(
                 'Root.Main',
                 [
@@ -38,10 +34,10 @@ class ElementalSwitchTabsExtension extends DataExtension
                 ],
                 'Title'
             );
-        } elseif($controller && ! ($controller instanceof CMSPageEditController)) {
+        } elseif ($controller && ! ($controller instanceof CMSPageEditController)) {
             $page = $owner->getPage();
             $pageTitle = 'Page not found';
-            if($page) {
+            if ($page) {
                 $pageTitle = $page->MenuTitle;
             }
             $fields->addFieldsToTab(
@@ -61,15 +57,25 @@ class ElementalSwitchTabsExtension extends DataExtension
         $fields->addFieldsToTab(
             'Root.Settings',
             [
-                ReadonlyField::create(
-                    'Type',
-                    'Block Type',
-                    $owner->getType()
-                )
+                DropdownField::create(
+                    'ClassName',
+                    'Background Colour',
+                    $this->getClassDropdown()
+                ),
             ]
         );
     }
 
+
+
+    protected function getClassDropdown(): array
+    {
+        $owner = $this->getOwner();
+        $page = $owner->getPage();
+        return $page->getElementalTypes();
+
+
+    }
 
     public function getLinksField(string $nameOfTab, string $label)
     {
