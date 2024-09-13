@@ -72,9 +72,10 @@ class ElementalSwitchTabsExtension extends DataExtension
     {
         $owner = $this->getOwner();
         $page = $owner->getPage();
-        return $page->getElementalTypes();
-
-
+        if ($page) {
+            return $page->getElementalTypes();
+        }
+        return [];
     }
 
     public function getLinksField(string $nameOfTab, string $label)
