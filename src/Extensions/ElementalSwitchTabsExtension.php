@@ -59,9 +59,10 @@ class ElementalSwitchTabsExtension extends DataExtension
             [
                 DropdownField::create(
                     'ClassName',
-                    'Background Colour',
+                    'Change type of block',
                     $this->getClassDropdown()
-                ),
+                )
+                    ->setDescription('Use with care!')
             ]
         );
     }
