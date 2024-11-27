@@ -62,7 +62,7 @@ class ElementalSwitchTabsExtension extends DataExtension
                     'Change type of block',
                     $this->getClassDropdown()
                 )
-                    ->setDescription('Use with care!')
+                    ->setDescription('Use with care! Changing the type of block can lead to loss of data for this block.'),
             ]
         );
     }
