@@ -74,7 +74,9 @@ class ElementalSwitchTabsExtension extends DataExtension
         $owner = $this->getOwner();
         $page = $owner->getPage();
         if ($page) {
-            return $page->getElementalTypes();
+            $list = $page->getElementalTypes();
+            $list[$owner->ClassName] = $list[$owner->ClassName] . ' (current type)';
+            return $list;
         }
         return [];
     }
