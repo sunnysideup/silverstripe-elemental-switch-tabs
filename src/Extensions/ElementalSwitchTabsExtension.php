@@ -6,16 +6,16 @@ use SilverStripe\Forms\FieldList;
 use DNADesign\Elemental\Models\BaseElement;
 use DNADesign\Elemental\Controllers\ElementalAreaController;
 use SilverStripe\Forms\LiteralField;
-use SilverStripe\Forms\ReadonlyField;
 use SilverStripe\ORM\DataExtension;
 use SilverStripe\Control\Controller;
-use SilverStripe\Admin\LeftAndMain;
 use SilverStripe\CMS\Controllers\CMSPageEditController;
-use SilverStripe\Core\ClassInfo;
+use SilverStripe\Core\Extension;
 use SilverStripe\Forms\DropdownField;
 
-class ElementalSwitchTabsExtension extends DataExtension
+class ElementalSwitchTabsExtension extends Extension
 {
+    private static $show_change_type = true;
+
     public function updateCMSFields(FieldList $fields)
     {
         $owner = $this->getOwner();
@@ -54,6 +54,14 @@ class ElementalSwitchTabsExtension extends DataExtension
                 'Title'
             );
         }
+        if ($owner->Config()->get('show_change_type')) {
+            $this->addChangeTypeField($fields);
+        }
+
+    }
+
+    protected function addChangeTypeField(FieldList $fields)
+    {
         $fields->addFieldsToTab(
             'Root.Settings',
             [
