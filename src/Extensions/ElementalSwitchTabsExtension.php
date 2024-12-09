@@ -12,6 +12,11 @@ use SilverStripe\CMS\Controllers\CMSPageEditController;
 use SilverStripe\Core\Extension;
 use SilverStripe\Forms\DropdownField;
 
+/**
+ * Class \Sunnysideup\ElementalSwitchTabs\Extensions\ElementalSwitchTabsExtension
+ *
+ * @property BaseElement|ElementalSwitchTabsExtension $owner
+ */
 class ElementalSwitchTabsExtension extends Extension
 {
     private static $show_change_type = true;
