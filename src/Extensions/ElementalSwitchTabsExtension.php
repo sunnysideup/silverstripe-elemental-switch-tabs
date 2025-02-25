@@ -52,7 +52,7 @@ class ElementalSwitchTabsExtension extends Extension
                         '<a
                             href="' . $owner->CMSEditLink(false) . '"
                             style="text-align: right; display: block; padding-bottom: 20px;"
-                        >Edit on the "'.$pageTitle.'" page</a>'
+                        >Edit on the "' . $pageTitle . '" page</a>'
                     ),
                 ],
                 'Title'
@@ -61,7 +61,6 @@ class ElementalSwitchTabsExtension extends Extension
         if ($owner->Config()->get('show_change_type')) {
             $this->addChangeTypeField($fields);
         }
-
     }
 
     protected function addChangeTypeField(FieldList $fields)
@@ -87,7 +86,11 @@ class ElementalSwitchTabsExtension extends Extension
         $page = $owner->getPage();
         if ($page) {
             $list = $page->getElementalTypes();
-            $list[$owner->ClassName] = $list[$owner->ClassName] . ' (current type)';
+            if (isset($list[$owner->ClassName])) {
+                $list[$owner->ClassName] = $list[$owner->ClassName] . ' (current type)';
+            } else {
+                $list[$owner->ClassName] = $owner->singular_name() . ' (current type) - ERROR!';
+            }
             return $list;
         }
         return [];
