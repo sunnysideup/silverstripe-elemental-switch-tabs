@@ -5,6 +5,7 @@ namespace Sunnysideup\ElementalSwitchTabs\Extensions;
 use SilverStripe\Forms\FieldList;
 use DNADesign\Elemental\Models\BaseElement;
 use DNADesign\Elemental\Controllers\ElementalAreaController;
+use SilverStripe\Forms\GridField\GridField;
 use SilverStripe\Forms\LiteralField;
 use SilverStripe\Core\Extension;
 use SilverStripe\Control\Controller;
@@ -33,11 +34,17 @@ class ElementalSwitchTabsExtension extends Extension
                         '<a
                             href="' . $owner->MyCMSEditLink() . '"
                             style="float: right; display: block; width: auto;"
+                            target="_all_settings"
                         >Edit All Settings</a>'
                     ),
                 ],
                 'Title'
             );
+            foreach ($fields->dataFields() as $field) {
+                if ($field instanceof GridField) {
+                    $fields->removeByName($field->getName());
+                }
+            }
         } elseif ($controller && ! ($controller instanceof CMSPageEditController)) {
             $page = $owner->getPage();
             $pageTitle = 'Page not found';
