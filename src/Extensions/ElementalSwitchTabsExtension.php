@@ -5,12 +5,15 @@ namespace Sunnysideup\ElementalSwitchTabs\Extensions;
 use SilverStripe\Forms\FieldList;
 use DNADesign\Elemental\Models\BaseElement;
 use DNADesign\Elemental\Controllers\ElementalAreaController;
+use ReflectionClass;
 use SilverStripe\Forms\GridField\GridField;
 use SilverStripe\Forms\LiteralField;
 use SilverStripe\Core\Extension;
 use SilverStripe\Control\Controller;
 use SilverStripe\CMS\Controllers\CMSPageEditController;
 use SilverStripe\Forms\DropdownField;
+use SilverStripe\Forms\FormField;
+use SilverStripe\Forms\Schema\FormSchema;
 
 /**
  * Class \Sunnysideup\ElementalSwitchTabs\Extensions\ElementalSwitchTabsExtension
@@ -40,8 +43,9 @@ class ElementalSwitchTabsExtension extends Extension
                 ],
                 'Title'
             );
-            foreach ($fields->dataFields() as $field) {
-                if ($field instanceof GridField) {
+            $fieldsFlat = $fields->flattenFields();
+            foreach ($fieldsFlat as $field) {
+                if (! $this->isReactReady($field)) {
                     $fields->removeByName($field->getName());
                 }
             }
@@ -170,5 +174,41 @@ class ElementalSwitchTabsExtension extends Extension
         }
         return false;
 js;
+    }
+
+
+    protected static array $reactReadyCache = [];
+
+    protected function isReactReady(FormField $field): bool
+    {
+        $className = $field::class;
+
+        if ($className === GridField::class) {
+            return false;
+        }
+
+        return self::$reactReadyCache[$className]
+            ??= $this->hasSchemaMethodsIndicatingReact($className);
+    }
+
+    private function hasSchemaMethodsIndicatingReact(string $className): bool
+    {
+        $ref = new ReflectionClass($className);
+        foreach (['getSchemaStateDefaults', 'getSchemaDataDefaults'] as $methodName) {
+            if (! $ref->hasMethod($methodName)) {
+                continue;
+            }
+            $m = $ref->getMethod($methodName);
+
+            // React-ready if the method is implemented by this class OR any subclass of FormField (not base)
+            $decl = $m->getDeclaringClass()->getName();
+            if ($decl === $className) {
+                return true; // defined exactly here
+            }
+            if ($decl !== FormField::class) {
+                return true; // overridden upstream (still React schema-capable)
+            }
+        }
+        return false;
     }
 }
