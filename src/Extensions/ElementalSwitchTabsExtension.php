@@ -38,17 +38,16 @@ class ElementalSwitchTabsExtension extends Extension
                         '<a
                             href="' . $owner->MyCMSEditLink() . '"
                             style="float: right; display: block; width: auto;"
-                            target="_all_settings"
-                        >Edit All Settings</a>'
+                        >Edit all content and settings</a>'
                     ),
                 ],
                 'Title'
             );
             $callback = function (FieldList $fields) {
                 $fieldsFlat = $fields->flattenFields();
-                foreach ($fieldsFlat as $field) {
-                    if (! $this->isReactReady($field)) {
-                        $fields->removeByName($field->getName());
+                foreach ($fieldsFlat as $tmpField) {
+                    if (! $this->isReactReady($tmpField)) {
+                        $fields->removeByName($tmpField->getName());
                     }
                 }
             };
