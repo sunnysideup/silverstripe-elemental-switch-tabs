@@ -11,6 +11,7 @@ use SilverStripe\Forms\LiteralField;
 use SilverStripe\Core\Extension;
 use SilverStripe\Control\Controller;
 use SilverStripe\CMS\Controllers\CMSPageEditController;
+use SilverStripe\Forms\CheckboxField;
 use SilverStripe\Forms\DropdownField;
 use SilverStripe\Forms\FormField;
 use SilverStripe\Forms\Schema\FormSchema;
@@ -43,12 +44,15 @@ class ElementalSwitchTabsExtension extends Extension
                 ],
                 'Title'
             );
-            $fieldsFlat = $fields->flattenFields();
-            foreach ($fieldsFlat as $field) {
-                if (! $this->isReactReady($field)) {
-                    $fields->removeByName($field->getName());
+            $callback = function (FieldList $fields) {
+                $fieldsFlat = $fields->flattenFields();
+                foreach ($fieldsFlat as $field) {
+                    if (! $this->isReactReady($field)) {
+                        $fields->removeByName($field->getName());
+                    }
                 }
-            }
+            };
+            $this->callProtectedMethod($owner, 'afterUpdateCMSFields', [$callback]);
         } elseif ($controller && ! ($controller instanceof CMSPageEditController)) {
             $page = $owner->getPage();
             $pageTitle = 'Page not found';
@@ -186,9 +190,20 @@ js;
         if ($className === GridField::class) {
             return false;
         }
+        if ($field->getSchemaDataType()) {
+            return true;
+        }
 
         return self::$reactReadyCache[$className]
             ??= $this->hasSchemaMethodsIndicatingReact($className);
+    }
+
+    private function callProtectedMethod(object $object, string $methodName, array $args = []): mixed
+    {
+        $ref = new ReflectionClass($object);
+        $method = $ref->getMethod($methodName);
+        $method->setAccessible(true); // temporarily override visibility
+        return $method->invokeArgs($object, $args);
     }
 
     private function hasSchemaMethodsIndicatingReact(string $className): bool
