@@ -66,7 +66,7 @@ class ElementalSwitchTabsExtension extends Extension
                     LiteralField::create(
                         'AllSettingsLink',
                         '
-                            <a href="' . $owner->MyCMSEditLink() . '" style="float: right; width: fit-content;" class="btn action btn-secondary">
+                            <a href="' . $owner->MyCMSEditLink() . '" style="margin-bottom: 0;text-align: right;margin-left: auto;display: block;" class="btn action btn-secondary">
                                 Edit all content and settings  ' . $svg . '
                             </a>'
 
