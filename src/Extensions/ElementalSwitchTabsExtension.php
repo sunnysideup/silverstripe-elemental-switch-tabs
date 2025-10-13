@@ -11,6 +11,7 @@ use SilverStripe\Forms\LiteralField;
 use SilverStripe\Core\Extension;
 use SilverStripe\Control\Controller;
 use SilverStripe\CMS\Controllers\CMSPageEditController;
+use SilverStripe\Core\Config\Config;
 use SilverStripe\Forms\CheckboxField;
 use SilverStripe\Forms\DropdownField;
 use SilverStripe\Forms\FormField;
@@ -25,24 +26,56 @@ class ElementalSwitchTabsExtension extends Extension
 {
     private static $show_change_type = true;
 
+    private static $edit_svg = '
+<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+    stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+    role="img" aria-label="Edit all">
+<title>Edit all</title>
+<!-- Pencil -->
+<path d="M16.5 3.5l4 4L9 19l-4 1 1-4 11.5-12.5z"/>
+<!-- List lines -->
+<line x1="4" y1="6" x2="10" y2="6"/>
+<line x1="4" y1="12" x2="8" y2="12"/>
+<line x1="4" y1="18" x2="8" y2="18"/>
+</svg>
+    ';
+
     public function updateCMSFields(FieldList $fields)
     {
         $owner = $this->getOwner();
         $controller = Controller::curr();
         if (($controller && $controller instanceof ElementalAreaController)) {
+            $svg = Config::inst()->get(ElementalSwitchTabsExtension::class, 'edit_svg');
+            $fields->addFieldsToTab(
+                'Root.More…',
+                [
+                    LiteralField::create(
+                        'AllSettingsLinkInMore',
+                        '
+                        <h2>Edit all content and settings</h2>
+                        <p>
+                            The following fields are only available on the:
+                            <a href="' . $owner->MyCMSEditLink() . '">full edit screen</a>.
+                        </p>'
+                    ),
+                ],
+            );
             $fields->addFieldsToTab(
                 'Root.Main',
                 [
                     LiteralField::create(
-                        'AllSettings',
-                        '<a
-                            href="' . $owner->MyCMSEditLink() . '"
-                            style="float: right; display: block; width: auto;"
-                        >Edit all content and settings</a>'
+                        'AllSettingsLink',
+                        '
+                            <a href="' . $owner->MyCMSEditLink() . '" style="float: right; width: fit-content;" class="btn action btn-secondary">
+                                Edit all content and settings  ' . $svg . '
+                            </a>'
+
                     ),
                 ],
                 'Title'
             );
+
+
             $callback = function (FieldList $fields) {
                 $fieldsFlat = $fields->flattenFields();
                 foreach ($fieldsFlat as $tmpField) {
@@ -52,7 +85,7 @@ class ElementalSwitchTabsExtension extends Extension
                 }
             };
             $this->callProtectedMethod($owner, 'afterUpdateCMSFields', [$callback]);
-        } elseif ($controller && ! ($controller instanceof CMSPageEditController)) {
+        } elseif ($controller) {
             $page = $owner->getPage();
             $pageTitle = 'Page not found';
             if ($page) {
@@ -62,7 +95,7 @@ class ElementalSwitchTabsExtension extends Extension
                 'Root.Main',
                 [
                     LiteralField::create(
-                        'AllSettings',
+                        'AllSettingsLink',
                         '<a
                             href="' . $owner->CMSEditLink(false) . '"
                             style="text-align: right; display: block; padding-bottom: 20px;"
@@ -167,15 +200,19 @@ class ElementalSwitchTabsExtension extends Extension
     protected function getJsFoTabSwitch(string $nameOfTab): string
     {
         return <<<js
-        if(jQuery(this).closest('div.element-editor__element').length > 0) {
-            jQuery(this)
-                .closest('div.element-editor__element')
-                .find('button[name=\\'{$nameOfTab}\\']')
-                .click();
-        } else {
-            jQuery('li[aria-controls=\\'Root_{$nameOfTab}\\'] a').click();
-        }
-        return false;
+const element = event.currentTarget
+const elementEditor = element.closest('div.element-editor__element')
+
+if (elementEditor) {
+  const button = elementEditor.querySelector(`button[name='$nameOfTab']`)
+  if (button) button.click()
+} else {
+  const tabLink = document.querySelector(`li[aria-controls='Root_$nameOfTab'] a`)
+  if (tabLink) tabLink.click()
+}
+
+event.preventDefault()
+return false
 js;
     }
 
