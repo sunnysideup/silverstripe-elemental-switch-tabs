@@ -66,9 +66,11 @@ class ElementalSwitchTabsExtension extends Extension
                     LiteralField::create(
                         'AllSettingsLink',
                         '
-                            <a href="' . $owner->MyCMSEditLink() . '" style="margin-bottom: 0;text-align: right;margin-left: auto;display: block;" class="btn action btn-secondary">
+                        <div style="text-align: right;padding-bottom: 20px;">
+                            <a href="' . $owner->MyCMSEditLink() . '" style="float: right;" class="btn action btn-secondary">
                                 Edit all content and settings  ' . $svg . '
-                            </a>'
+                            </a>
+                        </div>'
 
                     ),
                 ],
@@ -78,10 +80,15 @@ class ElementalSwitchTabsExtension extends Extension
 
             $callback = function (FieldList $fields) {
                 $fieldsFlat = $fields->flattenFields();
+                $hasMoreFields = false;
                 foreach ($fieldsFlat as $tmpField) {
                     if (! $this->isReactReady($tmpField)) {
                         $fields->removeByName($tmpField->getName());
+                        $hasMoreFields = true;
                     }
+                }
+                if (! $hasMoreFields) {
+                    $fields->removeByName('AllSettingsLink');
                 }
             };
             $this->callProtectedMethod($owner, 'afterUpdateCMSFields', [$callback]);
