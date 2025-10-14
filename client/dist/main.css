@@ -1,0 +1,41 @@
+.cms-edit-form {
+  .element-editor-header__info {
+    color: #005a93 !important;
+  }
+
+  .element-editor__element {
+    position: relative;
+    min-height: 4rem;
+    padding-bottom: 0;
+
+    .element-editor-content {
+      .element-editor-editform {
+        padding-bottom: 2rem;
+      }
+    }
+
+    .font-icon-edit-write {
+      color: #005a93 !important;
+    }
+
+    .edit-all-button {
+      position: absolute;
+      right: 5.2rem;
+      top: 0.85rem;
+    }
+
+    .edit-all-button a {
+      display: block;
+      margin-right: 0 !important;
+    }
+
+    .btn-toolbar {
+      display: none;
+    }
+  }
+}
+
+.cms-edit-form.changed .element-editor__element .btn-toolbar,
+.cms-edit-form.changed .element-editor__element .btn-toolbar * {
+  display: block;
+}

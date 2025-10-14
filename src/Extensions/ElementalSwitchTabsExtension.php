@@ -66,9 +66,16 @@ class ElementalSwitchTabsExtension extends Extension
                     LiteralField::create(
                         'AllSettingsLink',
                         '
-                        <div style="text-align: right;padding-bottom: 20px;">
-                            <a href="' . $owner->MyCMSEditLink() . '" style="float: right;" class="btn action btn-secondary">
-                                Edit all content and settings  ' . $svg . '
+                        <div class="edit-all-button">
+                            <a href="' . $owner->MyCMSEditLink() . '">
+                                <button
+                                    type="button"
+                                    aria-haspopup="false"
+                                    aria-expanded="false"
+                                    class="element-editor-header__actions-toggle btn btn-sm btn--no-text font-icon-edit-write btn btn-secondary" aria-label="Edit All"
+                                >
+                                    <span class="sr-only">View actions</span>
+                                </button>
                             </a>
                         </div>'
 
@@ -103,10 +110,11 @@ class ElementalSwitchTabsExtension extends Extension
                 [
                     LiteralField::create(
                         'AllSettingsLink',
-                        '<a
+                        '<div style="text-align: right"><a
                             href="' . $owner->CMSEditLink(false) . '"
-                            style="text-align: right; display: block; padding-bottom: 20px;"
-                        >Edit on the "' . $pageTitle . '" page</a>'
+                            class="btn action btn-secondary"
+                            style=" "
+                        >Edit on the "' . $pageTitle . '" page</a></div>'
                     ),
                 ],
                 'Title'

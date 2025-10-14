@@ -1,7 +1,10 @@
 ---
 Name: elemental-switch-tabs
 ---
-
 DNADesign\Elemental\Models\BaseElement:
   extensions:
     - Sunnysideup\ElementalSwitchTabs\Extensions\ElementalSwitchTabsExtension
+
+SilverStripe\Admin\LeftAndMain:
+  extra_requirements_css:
+    - "sunnysideup/elemental-switch-tabs: client/dist/main.css"
