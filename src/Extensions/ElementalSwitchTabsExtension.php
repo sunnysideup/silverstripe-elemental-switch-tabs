@@ -104,9 +104,7 @@ class ElementalSwitchTabsExtension extends Extension
                     // $fields->fieldByName('AllSettingsLink')->setTitle('xxx');
                     $fields->fieldByName('Root.More….AllSettingsLinkInMore')
                         ->setValue(
-                            '<p class="message good">
-                                All fields and settings can be edited here.
-                            </p>'
+                            ''
 
                         );
                     $fields->removeByName('AllSettingsLink');

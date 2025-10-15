@@ -18,6 +18,12 @@
       color: #005a93 !important;
     }
 
+
+
+    .btn-outline-primary {
+      color: #008a00 !important;
+    }
+
     .edit-all-button {
       position: absolute;
       /* right: 5.2rem;
