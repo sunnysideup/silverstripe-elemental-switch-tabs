@@ -64,7 +64,7 @@ class ElementalSwitchTabsExtension extends Extension
                 ),
             ],
         );
-        if (($controller && $controller instanceof ElementalAreaController)) {
+        if ($controller && $controller instanceof ElementalAreaController) {
 
             $fields->addFieldsToTab(
                 'Root',
