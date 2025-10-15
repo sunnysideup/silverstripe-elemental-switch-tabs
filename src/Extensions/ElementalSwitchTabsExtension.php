@@ -15,6 +15,7 @@ use SilverStripe\Core\Config\Config;
 use SilverStripe\Forms\CheckboxField;
 use SilverStripe\Forms\DropdownField;
 use SilverStripe\Forms\FormField;
+use SilverStripe\Forms\HeaderField;
 use SilverStripe\Forms\Schema\FormSchema;
 
 /**
@@ -44,24 +45,29 @@ class ElementalSwitchTabsExtension extends Extension
     {
         $owner = $this->getOwner();
         $controller = Controller::curr();
-        if (($controller && $controller instanceof ElementalAreaController)) {
-            $svg = Config::inst()->get(ElementalSwitchTabsExtension::class, 'edit_svg');
-            $fields->addFieldsToTab(
-                'Root.More…',
-                [
-                    LiteralField::create(
-                        'AllSettingsLinkInMore',
-                        '
-                        <h2>Edit all content and settings</h2>
-                        <p>
-                            The following fields are only available on the:
-                            <a href="' . $owner->MyCMSEditLink() . '">full edit screen</a>.
+        $fields->addFieldsToTab(
+            'Root.More…',
+            [
+                LiteralField::create(
+                    'AllSettingsLinkInMore',
+                    '
+                        <p class="message warning">
+                            There are more fields and settings available on the full-screen editing page.
                         </p>'
-                    ),
-                ],
-            );
+                ),
+                LiteralField::create(
+                    'AllSettingsLinkInMoreLink',
+                    '
+                        <p>
+                            <a href="' . $owner->MyCMSEditLink() . '" class="btn action btn-outline-primary font-icon-edit-write" title="edit full-screen">Go to full-screen editing</a>
+                        </p>'
+                ),
+            ],
+        );
+        if (($controller && $controller instanceof ElementalAreaController)) {
+
             $fields->addFieldsToTab(
-                'Root.Main',
+                'Root',
                 [
                     LiteralField::create(
                         'AllSettingsLink',
@@ -95,11 +101,22 @@ class ElementalSwitchTabsExtension extends Extension
                     }
                 }
                 if (! $hasMoreFields) {
+                    // $fields->fieldByName('AllSettingsLink')->setTitle('xxx');
+                    $fields->fieldByName('Root.More….AllSettingsLinkInMore')
+                        ->setValue(
+                            '<p class="message good">
+                                All fields and settings can be edited here.
+                            </p>'
+
+                        );
                     $fields->removeByName('AllSettingsLink');
+                    // $fields->removeByName('Root.More….AllSettingsLinkInMore');
+                    // $fields->removeByName('More…');
+                    // $fields->removeByName('Root.More…');
                 }
             };
             $this->callProtectedMethod($owner, 'afterUpdateCMSFields', [$callback]);
-        } elseif ($controller) {
+        } elseif ($controller && $controller instanceof CMSPageEditController) {
             $page = $owner->getPage();
             $pageTitle = 'Page not found';
             if ($page) {
@@ -119,6 +136,10 @@ class ElementalSwitchTabsExtension extends Extension
                 ],
                 'Title'
             );
+            $fields->removeByName('AllSettingsLinkInMore');
+            $fields->removeByName('AllSettingsLinkInMoreLink');
+            $fields->removeByName('More…');
+            $fields->removeByName('Root.More…');
         }
         if ($owner->Config()->get('show_change_type')) {
             $this->addChangeTypeField($fields);

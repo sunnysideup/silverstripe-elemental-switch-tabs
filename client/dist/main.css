@@ -20,8 +20,10 @@
 
     .edit-all-button {
       position: absolute;
-      right: 5.2rem;
-      top: 0.85rem;
+      /* right: 5.2rem;
+      top: 0.85rem; */
+      right: 67px;
+      top: 9px;
     }
 
     .edit-all-button a {
