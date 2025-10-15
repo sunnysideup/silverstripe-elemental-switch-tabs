@@ -11,6 +11,7 @@ use SilverStripe\Forms\LiteralField;
 use SilverStripe\Core\Extension;
 use SilverStripe\Control\Controller;
 use SilverStripe\CMS\Controllers\CMSPageEditController;
+use SilverStripe\Control\Director;
 use SilverStripe\Core\Config\Config;
 use SilverStripe\Forms\CheckboxField;
 use SilverStripe\Forms\DropdownField;
@@ -49,7 +50,7 @@ class ElementalSwitchTabsExtension extends Extension
             'Root.More…',
             [
                 LiteralField::create(
-                    'AllSettingsLinkInMore',
+                    'ExplanationInMore',
                     '
                         <p class="message warning">
                             There are more fields and settings available on the full-screen editing page.
@@ -67,7 +68,7 @@ class ElementalSwitchTabsExtension extends Extension
         if ($controller && $controller instanceof ElementalAreaController) {
 
             $fields->addFieldsToTab(
-                'Root',
+                'Root.Main',
                 [
                     LiteralField::create(
                         'AllSettingsLink',
@@ -101,14 +102,13 @@ class ElementalSwitchTabsExtension extends Extension
                     }
                 }
                 if (! $hasMoreFields) {
-                    // $fields->fieldByName('AllSettingsLink')->setTitle('xxx');
-                    $fields->fieldByName('Root.More….AllSettingsLinkInMore')
+                    $fields->fieldByName('Root.More….ExplanationInMore')
                         ->setValue(
                             ''
 
                         );
                     $fields->removeByName('AllSettingsLink');
-                    // $fields->removeByName('Root.More….AllSettingsLinkInMore');
+                    // $fields->removeByName('Root.More….ExplanationInMore');
                     // $fields->removeByName('More…');
                     // $fields->removeByName('Root.More…');
                 }
@@ -124,7 +124,7 @@ class ElementalSwitchTabsExtension extends Extension
                 'Root.Main',
                 [
                     LiteralField::create(
-                        'AllSettingsLink',
+                        'AllSettingsLinkInFullScreen',
                         '<div style="text-align: right"><a
                             href="' . $owner->CMSEditLink(false) . '"
                             class="btn action btn-secondary"
@@ -134,10 +134,12 @@ class ElementalSwitchTabsExtension extends Extension
                 ],
                 'Title'
             );
-            $fields->removeByName('AllSettingsLinkInMore');
-            $fields->removeByName('AllSettingsLinkInMoreLink');
-            $fields->removeByName('More…');
-            $fields->removeByName('Root.More…');
+            if (! Director::is_cli() && $owner->exists()) {
+                $fields->removeByName('ExplanationInMore');
+                $fields->removeByName('AllSettingsLinkInMoreLink');
+                $fields->removeByName('More…');
+                $fields->removeByName('Root.More…');
+            }
         }
         if ($owner->Config()->get('show_change_type')) {
             $this->addChangeTypeField($fields);
