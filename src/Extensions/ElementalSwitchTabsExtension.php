@@ -18,6 +18,7 @@ use SilverStripe\Forms\DropdownField;
 use SilverStripe\Forms\FormField;
 use SilverStripe\Forms\HeaderField;
 use SilverStripe\Forms\Schema\FormSchema;
+use SilverStripe\Forms\Tab;
 
 /**
  * Class \Sunnysideup\ElementalSwitchTabs\Extensions\ElementalSwitchTabsExtension
@@ -66,7 +67,6 @@ class ElementalSwitchTabsExtension extends Extension
             ],
         );
         if ($controller && $controller instanceof ElementalAreaController) {
-
             $fields->addFieldsToTab(
                 'Root.Main',
                 [
@@ -111,6 +111,14 @@ class ElementalSwitchTabsExtension extends Extension
                     // $fields->removeByName('Root.More….ExplanationInMore');
                     // $fields->removeByName('More…');
                     // $fields->removeByName('Root.More…');
+                }
+                $tab = $fields->fieldByName('Root.More…');
+
+                if ($tab instanceof Tab) {
+                    // remove it first
+                    $fields->removeByName('More…');
+                    // then add it again at the end
+                    $fields->addFieldToTab('Root', $tab);
                 }
             };
             $this->callProtectedMethod($owner, 'afterUpdateCMSFields', [$callback]);
