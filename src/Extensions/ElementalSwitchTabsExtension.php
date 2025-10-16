@@ -116,7 +116,7 @@ class ElementalSwitchTabsExtension extends Extension
 
                 if ($tab instanceof Tab) {
                     // remove it first
-                    $fields->removeByName('More…');
+                    $fields->removeByName('Root.More…');
                     // then add it again at the end
                     $fields->addFieldToTab('Root', $tab);
                 }
