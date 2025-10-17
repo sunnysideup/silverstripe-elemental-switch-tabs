@@ -268,7 +268,7 @@ js;
     {
         $className = $field::class;
 
-        if ($className === GridField::class) {
+        if ($className === GridField::class || $field instanceof GridField) {
             return false;
         }
         if ($field->getSchemaDataType()) {
