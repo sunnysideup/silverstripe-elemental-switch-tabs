@@ -116,26 +116,28 @@ class ElementalSwitchTabsExtension extends Extension
                 }
             };
             $this->callProtectedMethod($owner, 'afterUpdateCMSFields', [$callback]);
-        } elseif ($controller && $controller instanceof CMSPageEditController) {
+        } else {
             $page = $owner->getPage();
             $pageTitle = 'Page not found';
             if ($page) {
                 $pageTitle = $page->MenuTitle;
             }
-            $fields->addFieldsToTab(
-                'Root.Main',
-                [
-                    LiteralField::create(
-                        'AllSettingsLinkInFullScreen',
-                        '<div style="text-align: right"><a
-                            href="' . $owner->CMSEditLink(false) . '"
-                            class="btn action btn-secondary"
-                            style=" "
-                        >Edit on the "' . $pageTitle . '" page</a></div>'
-                    ),
-                ],
-                'Title'
-            );
+            if (!($controller && $controller instanceof CMSPageEditController)) {
+                $fields->addFieldsToTab(
+                    'Root.Main',
+                    [
+                        LiteralField::create(
+                            'AllSettingsLinkInFullScreen',
+                            '<div style="text-align: right"><a
+                                href="' . $owner->CMSEditLink(false) . '"
+                                class="btn action btn-secondary"
+                                style=" "
+                            >Edit on the "' . $pageTitle . '" page</a></div>'
+                        ),
+                    ],
+                    'Title'
+                );
+            }
             if (! Director::is_cli() && $owner->exists()) {
                 $fields->removeByName('ExplanationInMore');
                 $fields->removeByName('AllSettingsLinkInMoreLink');
