@@ -2,22 +2,18 @@
 
 namespace Sunnysideup\ElementalSwitchTabs\Extensions;
 
-use SilverStripe\Forms\FieldList;
-use DNADesign\Elemental\Models\BaseElement;
 use DNADesign\Elemental\Controllers\ElementalAreaController;
+use DNADesign\Elemental\Models\BaseElement;
 use ReflectionClass;
+use SilverStripe\CMS\Controllers\CMSPageEditController;
+use SilverStripe\Control\Controller;
+use SilverStripe\Control\Director;
+use SilverStripe\Core\Extension;
+use SilverStripe\Forms\DropdownField;
+use SilverStripe\Forms\FieldList;
+use SilverStripe\Forms\FormField;
 use SilverStripe\Forms\GridField\GridField;
 use SilverStripe\Forms\LiteralField;
-use SilverStripe\Core\Extension;
-use SilverStripe\Control\Controller;
-use SilverStripe\CMS\Controllers\CMSPageEditController;
-use SilverStripe\Control\Director;
-use SilverStripe\Core\Config\Config;
-use SilverStripe\Forms\CheckboxField;
-use SilverStripe\Forms\DropdownField;
-use SilverStripe\Forms\FormField;
-use SilverStripe\Forms\HeaderField;
-use SilverStripe\Forms\Schema\FormSchema;
 use SilverStripe\Forms\Tab;
 
 /**
@@ -85,12 +81,10 @@ class ElementalSwitchTabsExtension extends Extension
                                 </button>
                             </a>
                         </div>'
-
                     ),
                 ],
                 'Title'
             );
-
 
             $callback = function (FieldList $fields) {
                 $fieldsFlat = $fields->flattenFields();
@@ -105,7 +99,6 @@ class ElementalSwitchTabsExtension extends Extension
                     $fields->fieldByName('Root.More….ExplanationInMore')
                         ->setValue(
                             ''
-
                         );
                     $fields->removeByName('AllSettingsLink');
                     // $fields->removeByName('Root.More….ExplanationInMore');
@@ -170,8 +163,6 @@ class ElementalSwitchTabsExtension extends Extension
         );
     }
 
-
-
     protected function getClassDropdown(): array
     {
         $owner = $this->getOwner();
@@ -179,7 +170,7 @@ class ElementalSwitchTabsExtension extends Extension
         if ($page) {
             $list = $page->getElementalTypes();
             if (isset($list[$owner->ClassName])) {
-                $list[$owner->ClassName] = $list[$owner->ClassName] . ' (current type)';
+                $list[$owner->ClassName] .= ' (current type)';
             } else {
                 $list[$owner->ClassName] = $owner->singular_name() . ' (current type) - ERROR!';
             }
@@ -260,7 +251,6 @@ event.preventDefault()
 return false
 js;
     }
-
 
     protected static array $reactReadyCache = [];
 
