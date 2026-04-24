@@ -34,7 +34,7 @@
       "Sunnysideup\\ElementalSwitchTabs\\": "src/"
     }
   },
-  "suggested": {},
+  "suggested": [],
   "extra": {
     "expose": [
       "client/dist"
