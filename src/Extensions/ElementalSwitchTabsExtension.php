@@ -95,6 +95,7 @@ class ElementalSwitchTabsExtension extends Extension
                         $hasMoreFields = true;
                     }
                 }
+
                 if (! $hasMoreFields) {
                     $fields->fieldByName('Root.More….ExplanationInMore')
                         ->setValue(
@@ -105,6 +106,7 @@ class ElementalSwitchTabsExtension extends Extension
                     // $fields->removeByName('More…');
                     // $fields->removeByName('Root.More…');
                 }
+
                 $tab = $fields->fieldByName('Root.More…');
 
                 if ($tab instanceof Tab) {
@@ -122,6 +124,7 @@ class ElementalSwitchTabsExtension extends Extension
             if ($page) {
                 $pageTitle = $page->MenuTitle;
             }
+
             if (!($controller && $controller instanceof CMSPageEditController)) {
                 $fields->addFieldsToTab(
                     'Root.Main',
@@ -138,6 +141,7 @@ class ElementalSwitchTabsExtension extends Extension
                     'Title'
                 );
             }
+
             if (! Director::is_cli() && $owner->exists()) {
                 $fields->removeByName('ExplanationInMore');
                 $fields->removeByName('AllSettingsLinkInMoreLink');
@@ -145,6 +149,7 @@ class ElementalSwitchTabsExtension extends Extension
                 $fields->removeByName('Root.More…');
             }
         }
+
         if ($owner->Config()->get('show_change_type')) {
             $this->addChangeTypeField($fields);
         }
@@ -176,8 +181,10 @@ class ElementalSwitchTabsExtension extends Extension
             } else {
                 $list[$owner->ClassName] = $owner->singular_name() . ' (current type) - ERROR!';
             }
+
             return $list;
         }
+
         return [];
     }
 
@@ -206,6 +213,7 @@ class ElementalSwitchTabsExtension extends Extension
                 ;
             }
         }
+
         return null;
     }
 
@@ -232,6 +240,7 @@ class ElementalSwitchTabsExtension extends Extension
                 ;
             }
         }
+
         return null;
     }
 
@@ -242,10 +251,10 @@ const element = event.currentTarget
 const elementEditor = element.closest('div.element-editor__element')
 
 if (elementEditor) {
-  const button = elementEditor.querySelector(`button[name='$nameOfTab']`)
+  const button = elementEditor.querySelector(`button[name='{$nameOfTab}']`)
   if (button) button.click()
 } else {
-  const tabLink = document.querySelector(`li[aria-controls='Root_$nameOfTab'] a`)
+  const tabLink = document.querySelector(`li[aria-controls='Root_{$nameOfTab}'] a`)
   if (tabLink) tabLink.click()
 }
 
@@ -263,6 +272,7 @@ js;
         if ($className === GridField::class || $field instanceof GridField) {
             return false;
         }
+
         if ($field->getSchemaDataType()) {
             return true;
         }
@@ -274,8 +284,7 @@ js;
     private function callProtectedMethod(object $object, string $methodName, array $args = []): mixed
     {
         $ref = new ReflectionClass($object);
-        $method = $ref->getMethod($methodName);
-        $method->setAccessible(true); // temporarily override visibility
+        $method = $ref->getMethod($methodName); // temporarily override visibility
         return $method->invokeArgs($object, $args);
     }
 
@@ -286,6 +295,7 @@ js;
             if (! $ref->hasMethod($methodName)) {
                 continue;
             }
+
             $m = $ref->getMethod($methodName);
 
             // React-ready if the method is implemented by this class OR any subclass of FormField (not base)
@@ -293,10 +303,12 @@ js;
             if ($decl === $className) {
                 return true; // defined exactly here
             }
+
             if ($decl !== FormField::class) {
                 return true; // overridden upstream (still React schema-capable)
             }
         }
+
         return false;
     }
 }
