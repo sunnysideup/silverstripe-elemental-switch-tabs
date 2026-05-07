@@ -45,6 +45,19 @@
       display: none;
     }
   }
+  .element-editor__element:focus,
+  .element-editor__element:focus-within {
+    z-index: 999;
+    fieldset {
+      position: relative;
+      z-index: 1;
+    }
+    .btn-toolbar {
+      position: relative;
+      z-index: 0;
+    }
+  }
+
 }
 
 .cms-edit-form.changed .element-editor__element .btn-toolbar,
