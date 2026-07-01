@@ -220,7 +220,7 @@ class ElementalSwitchTabsExtension extends Extension
     public function MyCMSEditLink(): string
     {
         $owner = $this->getOwner();
-        return (string) $owner->CMSEditLink(true);
+        return (string) $owner->getCMSEditLink(true);
     }
 
     /**
