@@ -77,7 +77,7 @@ class ElementalSwitchTabsExtension extends Extension
                                     aria-expanded="false"
                                     class="element-editor-header__actions-toggle btn btn-sm btn--no-text font-icon-edit-write btn btn-secondary" aria-label="Edit All"
                                 >
-                                    <span class="sr-only">View actions</span>
+                                    <span>Edit in Detail</span>
                                 </button>
                             </a>
                         </div>'

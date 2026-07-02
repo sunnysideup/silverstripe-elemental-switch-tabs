@@ -22,8 +22,6 @@
       color: #005a93 !important;
     }
 
-
-
     .btn-outline-primary {
       color: #008a00 !important;
     }
@@ -32,8 +30,11 @@
       position: absolute;
       /* right: 5.2rem;
       top: 0.85rem; */
-      right: 67px;
-      top: 9px;
+      right: 0;
+      bottom: 0px;
+      background: rgb(237.6590909091, 240.2045454545, 244.3409090909);
+      border-radius: 0.25rem;
+      z-index: 999;
     }
 
     .edit-all-button a {
@@ -57,7 +58,6 @@
       z-index: 0;
     }
   }
-
 }
 
 .cms-edit-form.changed .element-editor__element .btn-toolbar,
