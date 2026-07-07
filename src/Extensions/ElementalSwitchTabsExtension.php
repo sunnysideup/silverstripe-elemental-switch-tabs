@@ -132,7 +132,7 @@ class ElementalSwitchTabsExtension extends Extension
                         LiteralField::create(
                             'AllSettingsLinkInFullScreen',
                             '<div style="text-align: right"><a
-                                href="' . $owner->CMSEditLink(false) . '"
+                                href="' . ($page ? $page->CMSEditLink() : $owner->CMSEditLink()) . '"
                                 class="btn action btn-secondary"
                                 style=" "
                             >Edit on the "' . $pageTitle . '" page</a></div>'
