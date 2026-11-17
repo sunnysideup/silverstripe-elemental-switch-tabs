@@ -4,17 +4,22 @@ namespace Sunnysideup\ElementalSwitchTabs\Extensions;
 
 use DNADesign\Elemental\Controllers\ElementalAreaController;
 use DNADesign\Elemental\Models\BaseElement;
+use Psr\SimpleCache\CacheInterface;
 use ReflectionClass;
 use SilverStripe\CMS\Controllers\CMSPageEditController;
 use SilverStripe\Control\Controller;
 use SilverStripe\Control\Director;
+use SilverStripe\Core\ClassInfo;
+use SilverStripe\Core\Config\Config;
 use SilverStripe\Core\Extension;
+use SilverStripe\Core\Injector\Injector;
 use SilverStripe\Forms\DropdownField;
 use SilverStripe\Forms\FieldList;
 use SilverStripe\Forms\FormField;
 use SilverStripe\Forms\GridField\GridField;
 use SilverStripe\Forms\LiteralField;
 use SilverStripe\Forms\Tab;
+use Throwable;
 
 /**
  * Class \Sunnysideup\ElementalSwitchTabs\Extensions\ElementalSwitchTabsExtension
@@ -24,6 +29,18 @@ use SilverStripe\Forms\Tab;
 class ElementalSwitchTabsExtension extends Extension
 {
     private static $show_change_type = true;
+
+    /**
+     * Turn inline editing off for a block type when its real CMS fields are not
+     * React-ready. Set to false on a block class (YAML or private static) to opt out.
+     */
+    private static bool $auto_disable_inline_editing = true;
+
+    /**
+     * true  = only a GridField disables inline editing
+     * false = any non-React-ready field disables inline editing
+     */
+    private static bool $only_gridfields_disable_inline_editing = true;
 
     private static $edit_svg = '
 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
@@ -38,6 +55,10 @@ class ElementalSwitchTabsExtension extends Extension
 <line x1="4" y1="18" x2="8" y2="18"/>
 </svg>
     ';
+
+    protected static array $reactReadyCache = [];
+
+    private static bool $inlineOverridesApplied = false;
 
     public function updateCMSFields(FieldList $fields)
     {
@@ -155,6 +176,88 @@ class ElementalSwitchTabsExtension extends Extension
         }
     }
 
+    /**
+     * Called before the CMS builds the page edit form
+     * (see ApplyInlineEditableOverridesExtension on LeftAndMain).
+     *
+     * Elemental decides inline editing per block TYPE (via a singleton), so we
+     * check one real, saved record per type and switch the type's config off
+     * if its fields are not suitable for inline editing.
+     */
+    public static function applyInlineEditableOverrides(): void
+    {
+        if (self::$inlineOverridesApplied) {
+            return;
+        }
+        self::$inlineOverridesApplied = true;
+
+        $cache = self::getInlineEditableCache();
+        $config = Config::inst();
+
+        foreach (ClassInfo::subclassesFor(BaseElement::class, false) as $class) {
+            if (! $config->get($class, 'inline_editable')) {
+                continue; // already off
+            }
+
+            if (! $config->get($class, 'auto_disable_inline_editing')) {
+                continue; // block opted out
+            }
+
+            $key = md5($class);
+            $canBeInline = $cache->get($key);
+
+            if ($canBeInline === null) {
+                $record = $class::get()
+                    ->filter('ClassName', $class)
+                    ->sort('LastEdited', 'DESC')
+                    ->first();
+
+                if (! $record) {
+                    continue; // no real record yet: keep default, don't cache
+                }
+
+                $canBeInline = (bool) $record->canBeEditedInline();
+                $cache->set($key, $canBeInline);
+            }
+
+            if ($canBeInline === false) {
+                Config::modify()->set($class, 'inline_editable', false);
+            }
+        }
+    }
+
+    public static function clearInlineEditableCache(): void
+    {
+        self::getInlineEditableCache()->clear();
+    }
+
+    /**
+     * Checks the real CMS fields of this (saved) block.
+     */
+    public function canBeEditedInline(): bool
+    {
+        $owner = $this->getOwner();
+        $onlyGridFields = (bool) $owner->config()->get('only_gridfields_disable_inline_editing');
+
+        try {
+            $fields = $owner->getCMSFields();
+        } catch (Throwable) {
+            return true; // never break the CMS over this check
+        }
+
+        foreach ($fields->flattenFields() as $field) {
+            if ($field instanceof GridField) {
+                return false;
+            }
+
+            if (! $onlyGridFields && ! $this->isReactReady($field)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
     protected function addChangeTypeField(FieldList $fields)
     {
         $fields->addFieldsToTab(
@@ -263,8 +366,6 @@ return false
 js;
     }
 
-    protected static array $reactReadyCache = [];
-
     protected function isReactReady(FormField $field): bool
     {
         $className = $field::class;
@@ -279,6 +380,11 @@ js;
 
         return self::$reactReadyCache[$className]
             ??= $this->hasSchemaMethodsIndicatingReact($className);
+    }
+
+    private static function getInlineEditableCache(): CacheInterface
+    {
+        return Injector::inst()->get(CacheInterface::class . '.ElementalSwitchTabsInline');
     }
 
     private function callProtectedMethod(object $object, string $methodName, array $args = []): mixed

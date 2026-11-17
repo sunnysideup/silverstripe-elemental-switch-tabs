@@ -8,3 +8,21 @@ DNADesign\Elemental\Models\BaseElement:
 SilverStripe\Admin\LeftAndMain:
   extra_requirements_css:
     - "sunnysideup/elemental-switch-tabs: client/dist/main.css"
+  extensions:
+    - Sunnysideup\ElementalSwitchTabs\Extensions\ApplyInlineEditableOverridesExtension
+
+
+SilverStripe\Core\Injector\Injector:
+  Psr\SimpleCache\CacheInterface.ElementalSwitchTabsInline:
+    factory: SilverStripe\Core\Cache\CacheFactory
+    constructor:
+      namespace: 'ElementalSwitchTabsInline'
+
+
+# per-block overrules (optional)
+#App\Elements\MyBlock:
+#  auto_disable_inline_editing: false     # never auto-disable for this block
+#App\Elements\OtherBlock:
+#  inline_editable: false                 # always off, no check needed
+#App\Elements\StrictBlock:
+#  only_gridfields_disable_inline_editing: false   # any non-React field disables inline
